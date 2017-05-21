@@ -33,7 +33,7 @@
         <!--    Indicators    -->
         <p ng-hide="hideYearInputs" ng-class="yearInputs">From Year: <input type="number" ng-model="fromYear"><br></p>
         <p ng-hide="hideYearInputs" ng-class="yearInputs">To year: <input type="number" ng-model="toYear"><br></p>
-
+        
         <!--    Test:    -->
         <p> You chose: {{dataType}} </p>
         <p> You chose: {{myWelcome || jsonexprecion | json: spacing}} </p>
@@ -65,7 +65,7 @@
             $scope.loadBankData = function() {
                 $http({
                     method: "GET",
-                    url: resolveBasicURL($scope.dataType),
+                    url: resolveBasicURL($scope.dataType, $scope.languageData),
                     headers: 'Access-Control-Allow-Origin'
                 }).then(function mySucces(response) {
                     $scope.resultInfo = response.data[0];
@@ -87,9 +87,10 @@
 
         });
 
-        function resolveBasicURL(type) {
+        function resolveBasicURL(type, languageData) {
             var url = 'http://api.worldbank.org/';
             var suffix = '';
+            var languageSuffix = languageData + '/'; 
             var json_suffix = '?format=json';
             console.log(type);
             switch (type) {
@@ -108,9 +109,8 @@
 
             }
 
-            console.log(url + suffix + json_suffix);
-
-            return url + suffix + json_suffix;
+            console.log(url + languageSuffix + suffix + json_suffix);
+            return url + languageSuffix + suffix + json_suffix;
         }
 
     </script>
