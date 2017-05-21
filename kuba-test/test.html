@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>World Bank</title>
+    <meta name="description" content="Interaktywny poradnik szybkiego startu dla Brackets.">
+</head>
+
+<body>
+
+    <div ng-app="myApp" ng-controller="myCtrl">
+        <h1>Welcome to the World Bank</h1>
+        <h2>Check the world's condition</h2>
+
+        <select type="text" ng-model="dataType" ng-change="querySwitch()">
+            <option value="country">countries</option>
+            <option value="sources">sources</option>
+            <option value="indicator">indicators</option>
+            <option value="income">income level</option>
+        </select>
+
+        <select type="text" ng-model="languageData">
+            <option value="en">EN</option>
+            <option value="es">ES</option>
+            <option value="fr">FR</option>
+            <option value="ar">AR</option>
+            <option value="zh">ZH</option>
+        </select>
+
+        <!--    Indicators    -->
+        <p ng-hide="hideYearInputs" ng-class="yearInputs">From Year: <input type="number" ng-model="fromYear"><br></p>
+        <p ng-hide="hideYearInputs" ng-class="yearInputs">To year: <input type="number" ng-model="toYear"><br></p>
+
+        <!--    Test:    -->
+        <p> You chose: {{dataType}} </p>
+        <p> You chose: {{myWelcome || jsonexprecion | json: spacing}} </p>
+
+
+        <!--    Load data button   -->
+        <button ng-click="loadBankData()">Load data from World Bank</button>
+
+        <!--    Loaded data:    -->
+        <p>
+            {{resultInfo}}
+        </p>
+
+        <p>
+            {{resultData}}
+        </p>
+
+    </div>
+
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope, $http) {
+            // Init data
+            $scope.dataType = "country";
+            $scope.languageData = "en";
+            $scope.hideYearInputs = true;
+
+            // Load data from world bank
+            $scope.loadBankData = function() {
+                $http({
+                    method: "GET",
+                    url: resolveBasicURL($scope.dataType),
+                    headers: 'Access-Control-Allow-Origin'
+                }).then(function mySucces(response) {
+                    $scope.resultInfo = response.data[0];
+                    $scope.resultData = response.data[1];
+                }, function myError(response) {
+                    $scope.myWelcome = response.statusText;
+                });
+            }
+
+            // Hide or show inputs
+            $scope.querySwitch = function() {
+                if ($scope.dataType == 'indicator') {
+                    $scope.hideYearInputs = false;
+                } else {
+                    $scope.hideYearInputs = true;
+                }
+            }
+
+
+        });
+
+        function resolveBasicURL(type) {
+            var url = 'http://api.worldbank.org/';
+            var suffix = '';
+            var json_suffix = '?format=json';
+            console.log(type);
+            switch (type) {
+                case 'country':
+                    suffix = 'countries';
+                    break;
+                case 'sources':
+                    suffix = "sources"
+                    break;
+                case 'income':
+                    suffix = "incomeLevels"
+                    break;
+                case 'indicator':
+                    suffix = "indicator"
+                    break;
+
+            }
+
+            console.log(url + suffix + json_suffix);
+
+            return url + suffix + json_suffix;
+        }
+
+    </script>
+
+</body>
+
+</html>
