@@ -65,11 +65,10 @@
 
         <!--    Load data button   -->
         <button ng-click="loadBankData()" >Load data from World Bank</button>
-		<button ng-click="delete()" >Load</button>
 
         <!--    Loaded data:    -->
        
-		 <div class="tableDiv" >
+		 <div id="tableDiv" >
 			<table id="table"></table>
 		</div>
 		
@@ -81,7 +80,7 @@
         var app = angular.module('myApp', []);
         app.controller('myCtrl', function($scope, $http) {
             // Init data
-            $scope.dataType = "Choose...";
+            $scope.dataType = "country";
             $scope.languageData = "en";
             $scope.hideYearInputs = true;
 
@@ -92,8 +91,8 @@
                     url: resolveBasicURL($scope.dataType, $scope.languageData),
                     headers: 'Access-Control-Allow-Origin'
                 }).then(function mySucces(response) {
-					if (dataType = "country"){	
-						
+					if ($scope.dataType == "country"){
+						del();
 						$('#table').bootstrapTable({
 							data: response.data[1],
 							columns: [{
@@ -115,6 +114,20 @@
 							]
 						});
 					}
+					else if ($scope.dataType == "sources"){
+						del();
+						$('#table').bootstrapTable({
+							data: response.data[1],
+							columns: [{
+								field: 'id',
+								title: 'ID'
+							}, {
+								field: 'name',
+								title: 'Name'
+							}
+							]
+						});
+					}
                 }, function myError(response) {
                     $scope.myWelcome = response.statusText;
                 });
@@ -131,6 +144,16 @@
 
 
         });
+		
+		function del() {
+			var elem = document.getElementById("table");
+			elem.parentNode.removeChild(elem);
+			elem = document.getElementById("tableDiv");
+			var table = document.createElement("TABLE");
+			table.setAttribute("id", "table");
+			elem.appendChild(table);
+			
+		}
 
         function resolveBasicURL(type, languageData) {
             var url = 'http://api.worldbank.org/';
@@ -157,11 +180,6 @@
             console.log(url + languageSuffix + suffix + json_suffix);
             return url + languageSuffix + suffix + json_suffix;
         }	
-		
-		$scope.delete = function(){
-			$('.tableDiv',this).remove();
-		}
-		
     </script>
 
 </body>
