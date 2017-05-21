@@ -1,0 +1,13 @@
+body {
+  background: url(../images/bg-sky.png);
+  background-repeat: repeat !important;
+  background-attachment: fixed;
+}
+
+.outerdiv {
+  margin-top:60px;
+}
+
+.form-group {
+	width: 150px;
+}
