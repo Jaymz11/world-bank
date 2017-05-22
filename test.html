@@ -69,7 +69,9 @@
         <!--    Loaded data:    -->
        
 		 <div id="tableDiv" >
-			<table id="table"></table>
+			<table id="table" 
+			
+			</table>
 		</div>
 		
 		</div>
@@ -128,6 +130,43 @@
 							]
 						});
 					}
+					else if ($scope.dataType == "indicator"){
+						del();
+						$('#table').bootstrapTable({
+							data: response.data[1],
+							columns: [{
+								field: 'id',
+								title: 'Indicator ID'
+							}, {
+								field: 'name',
+								title: 'Name'
+							}, {
+								field: 'source.value',
+								title: 'Source'
+							}, {
+								field: 'sourceOrganization',
+								title: 'Organization of a source'
+							}, {
+								field: 'topics(1)',
+								title: 'Topics'
+							}
+							]
+						});
+					}
+					else if ($scope.dataType == "income"){
+						del();
+						$('#table').bootstrapTable({
+							data: response.data[1],
+							columns: [{
+								field: 'id',
+								title: 'ID'
+							}, {
+								field: 'value',
+								title: 'Type of Income'
+							}
+							]
+						});
+					}
                 }, function myError(response) {
                     $scope.myWelcome = response.statusText;
                 });
@@ -151,9 +190,26 @@
 			elem = document.getElementById("tableDiv");
 			var table = document.createElement("TABLE");
 			table.setAttribute("id", "table");
+			table.setAttribute("data-search","true");
+			table.setAttribute("data-show-toggle", "true");
+			table.setAttribute("data-show-columns", "true");
+			table.setAttribute("data-show-export", "true");
+			table.setAttribute("data-detail-view", "true");
+			table.setAttribute("data-detail-formatter", "detailFormatter");
+			table.setAttribute("data-pagination", "true");
+			table.setAttribute("data-page-list", "[10, 25, 50, 100, ALL]");
+			table.setAttribute("data-show-footer", "false");
 			elem.appendChild(table);
 			
 		}
+		
+		 function detailFormatter(index, row) {
+        var html = [];
+        $.each(row, function (key, value) {
+            html.push('<p><b>' + key + ':</b> ' + value + '</p>');
+        });
+        return html.join('');
+    }
 
         function resolveBasicURL(type, languageData) {
             var url = 'http://api.worldbank.org/';
@@ -174,7 +230,6 @@
                 case 'indicator':
                     suffix = "indicator"
                     break;
-
             }
 
             console.log(url + languageSuffix + suffix + json_suffix);
