@@ -68,11 +68,7 @@
 
         <!--    Loaded data:    -->
        
-		 <div id="tableDiv" >
-			<table id="table" 
-			
-			</table>
-		</div>
+		 <div id="tableDiv"></div>
 		
 		</div>
 		
@@ -185,8 +181,8 @@
         });
 		
 		function del() {
-			var elem = document.getElementById("table");
-			elem.parentNode.removeChild(elem);
+			var elem = document.getElementById("tableDiv");
+			elem.innerHTML = '';
 			elem = document.getElementById("tableDiv");
 			var table = document.createElement("TABLE");
 			table.setAttribute("id", "table");
