@@ -64,19 +64,17 @@
 
             <div class="date1" ng-hide="hideYearInputs" ng-class="yearInputs">
                 <strong>From Year : </strong>
-                <input class="date-own form-control" style="width: 300px;" type="number" ng-model="fromYear">
+                <input style="width: 300px;" type="number" ng-model="fromYear">
             </div>
             <div class="date1" ng-hide="hideYearInputs" ng-class="yearInputs">
                 <strong>To Year : </strong>
-                <input class="date-own form-control" style="width: 300px;" type="number" ng-model="toYear">
+                <input style="width: 300px;" type="number" ng-model="toYear">
             </div>
-
+            
             <!--    Load data button   -->
-            <p>{{fromYear}} + " asdasd" </p>
             <button class="button" ng-click="loadBankData()">Load data from World Bank</button>
 
             <!--    Loaded data:    -->
-
             <div id="tableDiv"></div>
 
         </div>
