@@ -11,6 +11,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>World Bank</title>
+	
+	<!--Year picker-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
+	
+	<!--Other links-->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/bootstrap-table.css">
@@ -54,6 +61,13 @@
 			</select>
 		</div>
         
+		
+		<div class="date1">
+			<strong>Select Year : </strong>
+			<input class="date-own form-control" style="width: 300px;" type="text">
+		</div>
+		
+
 
         <!--    Indicators    -->
         <p ng-hide="hideYearInputs" ng-class="yearInputs">From Year: <input type="number" ng-model="fromYear"><br></p>
@@ -197,6 +211,14 @@
 			elem.appendChild(table);
 			
 		}
+		
+		$('.date-own').datepicker({
+			minViewMode: 2,
+			format: 'yyyy',
+			todayBtn: true,
+			autoclose: true,
+			showMeridian: true
+       });
 		
 		 function detailFormatter(index, row) {
         var html = [];
