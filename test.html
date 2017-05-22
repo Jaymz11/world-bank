@@ -29,7 +29,8 @@
 					</div>
 				</div>
 			</nav>
-	  
+
+    
         <h1>Welcome to the World Bank</h1>
 		
 		<div class="form-group">
@@ -43,7 +44,7 @@
 		</div>
 		
 		<div class="form-group">
-			<label for="sel1">Language:</label>
+			<label for="sel2">Language:</label>
 			<select class="form-control" ng-model="languageData">
 				<option value="en">EN</option>
 				<option value="es">ES</option>
@@ -58,13 +59,10 @@
         <p ng-hide="hideYearInputs" ng-class="yearInputs">From Year: <input type="number" ng-model="fromYear"><br></p>
         <p ng-hide="hideYearInputs" ng-class="yearInputs">To year: <input type="number" ng-model="toYear"><br></p>
 
-        <!--    Test:    -->
-        <p> You chose: {{dataType}} </p>
-        <p> You chose: {{myWelcome || jsonexprecion | json: spacing}} </p>
 
 
         <!--    Load data button   -->
-        <button ng-click="loadBankData()" >Load data from World Bank</button>
+        <button class="button" ng-click="loadBankData()" >Load data from World Bank</button>
 
         <!--    Loaded data:    -->
        
@@ -186,6 +184,7 @@
 			elem = document.getElementById("tableDiv");
 			var table = document.createElement("TABLE");
 			table.setAttribute("id", "table");
+			table.setAttribute("class", "flatTable");
 			table.setAttribute("data-search","true");
 			table.setAttribute("data-show-toggle", "true");
 			table.setAttribute("data-show-columns", "true");
