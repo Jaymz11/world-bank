@@ -2,8 +2,6 @@
 <html>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 
 
@@ -13,13 +11,15 @@
     <title>World Bank</title>
 
     <!--Year picker-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
+    <link href="bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+	
+	<script type="text/javascript" src="jquery/jquery-1.8.3.min.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="bootstrap.min.js"></script>
+	<script type="text/javascript" src="bootstrap-datetimepicker.js" charset="UTF-8"></script>
 
     <!--Other links-->
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-table.css">
     <script src="js/bootstrap-table.js"></script>
     <meta name="description" content="Interaktywny poradnik szybkiego startu dla Brackets.">
@@ -60,12 +60,21 @@
 				<option value="zh">ZH</option>
 			 </select>
             </div>
+			
+			<div class="date1" ng-hide="hideYearInputs" ng-class="yearInputs">
+				<div class="form-group">
+					<label for="dtp_input2" class="col-md-2 control-label">From Year :</label>
+					<div class="input-group date form_date col-md-5" data-date="" data-date-format="yyyy" data-link-field="dtp_input2" data-link-format="yyyy">
+						<input >
+						<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+						<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+					</div>
+					<input  id="dtp_input2"  style="width: 300px;" type="number" ng-model="fromYear"/><br/>
+				</div>
+			</div>
 
 
-            <div class="date1" ng-hide="hideYearInputs" ng-class="yearInputs">
-                <strong>From Year : </strong>
-                <input style="width: 300px;" type="number" ng-model="fromYear">
-            </div>
+            
             <div class="date1" ng-hide="hideYearInputs" ng-class="yearInputs">
                 <strong>To Year : </strong>
                 <input style="width: 300px;" type="number" ng-model="toYear">
@@ -201,14 +210,12 @@
             elem.appendChild(table);
 
         }
-
-        $('.date-own').datepicker({
-            minViewMode: 2,
-            format: 'yyyy',
-            todayBtn: true,
-            autoclose: true,
-            showMeridian: true
-        });
+		
+		$('.form_date').datetimepicker({
+			format: 'yyyy',
+			startView: 4,
+			minView: 5
+		});
 
         function detailFormatter(index, row) {
             var html = [];
@@ -241,7 +248,7 @@
             }
             var finalUrl = url + languageSuffix + suffix + json_suffix;
             if (type == 'indicator' && fromYear != undefined && toYear != undefined) {
-                finalUrl += '&date=' + parseInt(fromYear) + ':' + parseInt(toYear);
+                finalUrl += '&date=' + fromYear + ':' + parseInt(toYear);
             }
 
             console.log(finalUrl);
