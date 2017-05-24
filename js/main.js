@@ -4,26 +4,25 @@ var app = angular.module('myApp', []);
             $scope.dataType = "country";
             $scope.languageData = "en";
             $scope.hideYearInputs = true;
+			$scope.hideIncomeChoose = true;
+			$scope.hideCountryChoose = false;
             $scope.fromYear = 2010;
             $scope.toYear = 2015;
-
+			$scope.incomeLevel = "LMC";
+			
+			
             // Load data from world bank
             $scope.loadBankData = function() {
                 $http({
                     method: "GET",
-                    url: resolveBasicURL($scope.dataType, $scope.languageData, $scope.fromYear, $scope.toYear),
+                    url: resolveBasicURL($scope.dataType, $scope.languageData, $scope.fromYear, $scope.toYear, $scope.incomeLevel),
                     headers: 'Access-Control-Allow-Origin'
                 }).then(function mySucces(response) {
+					// Table countries
                     if ($scope.dataType == "country") {
-                        del();
+                        tableAttr();
 						var data = response.data[1];
-						var count = data.length;
-						while(count > 0){ 
-							if (data[count-1].capitalCity.length == 0){ 
-								data.splice(count-1,1); 
-							} 
-							count --; 
-						}
+						removeRegions(data.length, data);
                         $('#table').bootstrapTable({
                             data: data,
 								columns: [{
@@ -48,20 +47,9 @@ var app = angular.module('myApp', []);
 									sortable: true
 								}]
                         });
-                    } else if ($scope.dataType == "sources") {
-                        del();
-                        $('#table').bootstrapTable({
-                            data: response.data[1],
-                            columns: [{
-                                field: 'id',
-                                title: 'ID'
-                            }, {
-                                field: 'name',
-                                title: 'Name'
-                            }]
-                        });
-                    } else if ($scope.dataType == "indicator") {
-                        del();
+						// Table of comparison(using population indicator)
+                    }  else if ($scope.dataType == "indicator") {
+                        tableAttr();
                         $('#table').bootstrapTable({
                             data: response.data[1],
                             columns: [{
@@ -81,17 +69,34 @@ var app = angular.module('myApp', []);
                                 title: 'Topics'
                             }]
                         });
+						// Table of countries by their incomelevel
                     } else if ($scope.dataType == "income") {
-                        del();
+                        tableAttr();
+						var data = response.data[1];
+						removeRegions(data.length, data);
                         $('#table').bootstrapTable({
-                            data: response.data[1],
+                            data: data,
                             columns: [{
-                                field: 'id',
-                                title: 'ID'
-                            }, {
-                                field: 'value',
-                                title: 'Type of Income'
-                            }]
+									field: 'id',
+									title: 'Country ID',
+									sortable: true
+								}, {
+									field: 'name',
+									title: 'Name',
+									sortable: true
+								}, {
+									field: 'iso2Code',
+									title: 'countryCode',
+									sortable: true
+								}, {
+									field: 'region.value',
+									title: 'Region',
+									sortable: true
+								}, {
+									field: 'incomeLevel.value',
+									title: 'Income Level',
+									sortable: true
+								}]
                         });
                     }
                 }, function myError(response) {
@@ -101,17 +106,29 @@ var app = angular.module('myApp', []);
 
             // Hide or show inputs
             $scope.querySwitch = function() {
+				if ($scope.dataType == 'country') {
+                    $scope.hideCountryChoose = false;
+                } else {
+                    $scope.hideCountryChoose = true;
+                }
+				
                 if ($scope.dataType == 'indicator') {
                     $scope.hideYearInputs = false;
                 } else {
                     $scope.hideYearInputs = true;
+                }
+				
+				if ($scope.dataType == 'income') {
+                    $scope.hideIncomeChoose = false;
+                } else {
+                    $scope.hideIncomeChoose = true;
                 }
             }
 
 
         });
 
-        function del() {
+        function tableAttr() {
             var elem = document.getElementById("tableDiv");
             elem.innerHTML = '';
             elem = document.getElementById("tableDiv");
@@ -129,6 +146,14 @@ var app = angular.module('myApp', []);
             elem.appendChild(table);
 
         }
+		
+		function removeRegions(count, data){
+			while(count > 0){ 
+				if (data[count-1].capitalCity.length == 0)
+					data.splice(count-1,1);  
+				count --; 
+			}
+		}
 
         function detailFormatter(index, row) {
             var html = [];
@@ -138,29 +163,29 @@ var app = angular.module('myApp', []);
             return html.join('');
         }
 
-        function resolveBasicURL(type, languageData, fromYear, toYear) {
+        function resolveBasicURL(type, languageData, fromYear, toYear, incomeLevel) {
             console.log(fromYear);
 
             var url = 'http://api.worldbank.org/';
             var suffix = '';
             var languageSuffix = languageData + '/';
             var json_suffix = '?format=json';
-			var per_page = 500;
+			var per_page = '&per_page=304';
             switch (type) {
                 case 'country':
                     suffix = 'countries';
                     break;
-                case 'sources':
-                    suffix = "sources"
-                    break;
                 case 'income':
-                    suffix = "incomeLevels"
+                    suffix = "countries"
                     break;
                 case 'indicator':
                     suffix = "indicator"
                     break;
             }
-            var finalUrl = url + languageSuffix + suffix + json_suffix + "&per_page=" + per_page;
+            var finalUrl = url + languageSuffix + suffix + json_suffix + per_page;
+			if (type == "income" && incomeLevel != undefined){
+				finalUrl += '&incomeLevel=' + incomeLevel;
+			}
             if (type == 'indicator' && fromYear != undefined && toYear != undefined) {
                 finalUrl += '&date=' + parseInt(fromYear) + ':' + parseInt(toYear);
             }

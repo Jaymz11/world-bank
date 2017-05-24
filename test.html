@@ -36,7 +36,6 @@
                 <label for="sel1">Check the world's condition:</label>
                 <select class="form-control" ng-model="dataType" ng-change="querySwitch()">
 				<option value="country">Countries</option>
-				<option value="sources">Sources</option>
 				<option value="indicator">Indicators</option>
 				<option value="income">Income level</option>
 			</select>
@@ -52,6 +51,20 @@
 				<option value="zh">ZH</option>
 			 </select>
             </div>
+			
+			
+			<div class="form-group" ng-hide="hideIncomeChoose">
+                <label>Choose income level:</label>
+                <select class="form-control" ng-model="incomeLevel" ng-change="querySwitch()">
+				<option value="INX">Not classified</option>
+				<option value="LIC">Low income</option>
+				<option value="LMC">Lower middle income</option>
+				<option value="LMY">Low & middle income</option>
+				<option value="MIC">Middle income</option>
+				<option value="UMC">Upper middle income</option>
+				<option value="HIC">High income</option>
+			</select>
+            </div>
 
 
             <div class="date1" ng-hide="hideYearInputs" ng-class="yearInputs">
@@ -63,9 +76,9 @@
                 <input style="width: 300px;" type="number" ng-model="toYear">
             </div>
             
-            <!--    Load data button   -->
-            <button class="button" ng-click="loadBankData()">Load data from World Bank</button>
-
+            <!--    Load data button's   -->
+            <button class="button" ng-hide="hideCountryChoose" ng-click="loadBankData()">Show all countries</button>
+			<button class="button" ng-hide="hideIncomeChoose" ng-click="loadBankData()">Show countries by income</button>
             <!--    Loaded data:    -->
             <div id="tableDiv"></div>
         </div>
