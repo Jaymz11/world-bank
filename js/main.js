@@ -3,19 +3,20 @@ var app = angular.module('myApp', []);
             // Init data
             $scope.dataType = "country";
             $scope.languageData = "en";
-            $scope.hideYearInputs = true;
+            $scope.hideIndicatorChoose = true;
 			$scope.hideIncomeChoose = true;
 			$scope.hideCountryChoose = false;
             $scope.fromYear = 2010;
             $scope.toYear = 2015;
 			$scope.incomeLevel = "LMC";
+			$scope.indicatorData = "SP.POP.TOTL";
 			
 			
             // Load data from world bank
             $scope.loadBankData = function() {
                 $http({
                     method: "GET",
-                    url: resolveBasicURL($scope.dataType, $scope.languageData, $scope.fromYear, $scope.toYear, $scope.incomeLevel),
+                    url: resolveBasicURL($scope.dataType, $scope.languageData, $scope.fromYear, $scope.toYear, $scope.incomeLevel, $scope.indicatorData),
                     headers: 'Access-Control-Allow-Origin'
                 }).then(function mySucces(response) {
 					// Table countries
@@ -50,23 +51,21 @@ var app = angular.module('myApp', []);
 						// Table of comparison(using population indicator)
                     }  else if ($scope.dataType == "indicator") {
                         tableAttr();
+						var data = response.data[1];
                         $('#table').bootstrapTable({
-                            data: response.data[1],
+                            data: data,
                             columns: [{
-                                field: 'id',
-                                title: 'Indicator ID'
+                                field: 'country.id',
+                                title: 'Country ID'
                             }, {
-                                field: 'name',
+                                field: 'country.value',
                                 title: 'Name'
                             }, {
-                                field: 'source.value',
-                                title: 'Source'
+                                field: 'value',
+                                title: 'Data'
                             }, {
-                                field: 'sourceOrganization',
-                                title: 'Organization of a source'
-                            }, {
-                                field: 'topics(1)',
-                                title: 'Topics'
+                                field: 'date',
+                                title: 'Date'
                             }]
                         });
 						// Table of countries by their incomelevel
@@ -113,9 +112,9 @@ var app = angular.module('myApp', []);
                 }
 				
                 if ($scope.dataType == 'indicator') {
-                    $scope.hideYearInputs = false;
+                    $scope.hideIndicatorChoose = false;
                 } else {
-                    $scope.hideYearInputs = true;
+                    $scope.hideIndicatorChoose = true;
                 }
 				
 				if ($scope.dataType == 'income') {
@@ -149,10 +148,14 @@ var app = angular.module('myApp', []);
 		
 		function removeRegions(count, data){
 			while(count > 0){ 
-				if (data[count-1].capitalCity.length == 0)
+				if (hasNumber(data[count-1].iso2Code) || data[count-1].region.value == "Aggregates")
 					data.splice(count-1,1);  
 				count --; 
 			}
+		}
+		
+		function hasNumber(t) {
+			return /\d/.test(t);
 		}
 
         function detailFormatter(index, row) {
@@ -163,23 +166,23 @@ var app = angular.module('myApp', []);
             return html.join('');
         }
 
-        function resolveBasicURL(type, languageData, fromYear, toYear, incomeLevel) {
+        function resolveBasicURL(type, languageData, fromYear, toYear, incomeLevel, indicatorData) {
             console.log(fromYear);
-
+			http://api.worldbank.org/en/countries/indicators/EN.ATM.CO2E.KT?date=1960:2017&per_page=15048&format=json
             var url = 'http://api.worldbank.org/';
             var suffix = '';
             var languageSuffix = languageData + '/';
             var json_suffix = '?format=json';
-			var per_page = '&per_page=304';
+			var per_page = '&per_page=15048';
             switch (type) {
                 case 'country':
                     suffix = 'countries';
                     break;
                 case 'income':
-                    suffix = "countries"
+                    suffix = 'countries';
                     break;
                 case 'indicator':
-                    suffix = "indicator"
+                    suffix = 'countries/indicators/' + indicatorData;
                     break;
             }
             var finalUrl = url + languageSuffix + suffix + json_suffix + per_page;
