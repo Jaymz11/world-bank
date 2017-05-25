@@ -52,14 +52,23 @@ var app = angular.module('myApp', []);
                     }  else if ($scope.dataType == "indicator") {
                         tableAttr();
 						var data = response.data[1];
+						var count = data.length;
+						while(count > 0){ 
+							if (hasNumber(data[count-1].country.id))
+								data.splice(count-1,1);  
+							count --; 
+						}
+						
                         $('#table').bootstrapTable({
                             data: data,
                             columns: [{
                                 field: 'country.id',
-                                title: 'Country ID'
+                                title: 'Country ID',
+								sortable: true
                             }, {
                                 field: 'country.value',
-                                title: 'Name'
+                                title: 'Name',
+								sortable: true
                             }, {
                                 field: 'value',
                                 title: 'Data'
