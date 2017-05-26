@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>World Bank</title>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!--Other links-->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-table.css">
+    <script src="js/bootstrap-table.js"></script>
+	<script src="js/main.js"></script>
+    <meta name="description" content="Interaktywny poradnik szybkiego startu dla Brackets.">
+</head>
+
+<body>
+    <div ng-app="myApp" ng-controller="myCtrl">
+        <div class="container-fluid outerdiv">
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="#"><b>SPA</b> <span class="span-style">World Bank</span></a>
+                    </div>
+                </div>
+            </nav>
+
+            <h1>World Bank information</h1>
+
+            <div class="form-group">
+                <label for="sel1">Check the world's condition:</label>
+                <select class="form-control" ng-model="dataType" ng-change="querySwitch()">
+				<option value="country">Countries</option>
+				<option value="indicator">Indicators</option>
+				<option value="income">Income level</option>
+			</select>
+            </div>
+
+            <div class="form-group">
+                <label for="sel2">Language:</label>
+                <select class="form-control" ng-model="languageData">
+				<option value="en">EN</option>
+				<option value="es">ES</option>
+				<option value="fr">FR</option>
+				<option value="ar">AR</option>
+				<option value="zh">ZH</option>
+			 </select>
+            </div>
+			
+			
+			<div class="form-group" ng-hide="hideIncomeChoose">
+                <label>Choose income level:</label>
+                <select class="form-control" ng-model="incomeLevel" ng-change="querySwitch()">
+				<option value="INX">Not classified</option>
+				<option value="LIC">Low income</option>
+				<option value="LMC">Lower middle income</option>
+				<option value="LMY">Low & middle income</option>
+				<option value="MIC">Middle income</option>
+				<option value="UMC">Upper middle income</option>
+				<option value="HIC">High income</option>
+				</select>
+            </div>
+			
+			<div class="form-group" ng-hide="hideIndicatorChoose">
+                <label>Choose indicator:</label>
+                <select class="form-control" ng-model="indicatorData" ng-change="querySwitch()">
+				<option value="SP.POP.TOTL">Total Population</option>
+				<option value="AG.LND.TOTL.K2">Land Area</option>
+				<option value="SP.POP.GROW">Population Growth</option>
+				<option value="EN.ATM.CO2E.KT">CO2 emissions</option>
+				<option value="EG.ELC.ACCS.ZS">Access to Electricity</option>
+				</select>
+            </div>
+
+			<div class="form-group" ng-hide="hideIndicatorChoose">
+				<div class="date1" ng-class="yearInputs">
+					<strong>From Year : </strong>
+					<input style="width: 300px;" type="number" ng-model="fromYear">
+				</div>
+				<div class="date1"  ng-class="yearInputs">
+					<strong>To Year : </strong>
+					<input style="width: 300px;" type="number" ng-model="toYear">
+				</div>
+            </div>
+            <!--    Load data button's   -->
+            <button class="button" ng-hide="hideCountryChoose" ng-click="loadBankData()">Show all countries</button>
+			<button class="button" ng-hide="hideIncomeChoose" ng-click="loadBankData()">Show countries by income</button>
+			<button class="button" ng-hide="hideIndicatorChoose" ng-click="loadBankData()">Compare countries</button>
+			<button class="button" ng-hide="hideIndicatorChoose" ng-click="loadIndicatorsData()">Compare countries1</button>
+            <!--    Loaded data:    -->
+            <div id="tableDiv"></div>
+        </div>
+    </div>
+
+</body>
+
+</html>

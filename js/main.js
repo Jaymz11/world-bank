@@ -139,7 +139,6 @@ var app = angular.module('myApp', []);
         function tableAttr() {
             var elem = document.getElementById("tableDiv");
             elem.innerHTML = '';
-            elem = document.getElementById("tableDiv");
             var table = document.createElement("TABLE");
             table.setAttribute("id", "table");
             table.setAttribute("class", "flatTable");
