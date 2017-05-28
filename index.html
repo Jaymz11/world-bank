@@ -100,19 +100,33 @@
 				</div>
             </div>
 			
+			<div class="form-group" ng-hide="hideIndicatorChoose">
+                <label for="sel2">Chart Type:</label>
+                <select class="form-control" ng-model="chartType">
+				<option value="column2d">Column 2D</option>
+				<option value="column3d">Column 3D</option>
+				<option value="line">Line 2D</option>
+				<option value="bar3d">Bar 3D</option>
+				<option value="pareto3d">Pareto 3D</option>
+			 </select>
+            </div>
+			
 			
             <!--    Load data button's   -->
             <button class="button" ng-hide="hideCountryChoose" ng-click="loadBankData()">Show all countries</button>
 			<button class="button" ng-hide="hideIncomeChoose" ng-click="loadBankData()">Show countries by income</button>
 			<button class="button" ng-hide="hideIndicatorChoose" ng-click="loadBankData()">Compare countries</button>
 			<button class="button" ng-hide="hideIndicatorChoose" ng-click="loadChartData()">Create chart</button>
+			<button class="button" ng-hide="hideButton" ng-click="hideChart()">Hide/Show chart</button>
+			<button class="button" ng-hide="hideButtonShow" ng-click="showChart()">Hide/Show chart</button>
             <!--    Loaded data:    -->
-            <div id="tableDiv"></div>
-		
 			<center>
-				<div id="chart-container"></div>
+				<div ng-hide="hidedChart" id="chart-container"></div>
 			</center>
         
+			
+            <div id="tableDiv"></div>		
+			
     </div>
 
 </body>

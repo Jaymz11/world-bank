@@ -6,9 +6,13 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
             $scope.hideIndicatorChoose = true;
 			$scope.hideIncomeChoose = true;
 			$scope.hideCountryChoose = false;
+			$scope.hidedChart = true;
+			$scope.hideButton = true;
+			$scope.hideButtonShow = true;
             $scope.fromYear = 2010;
             $scope.toYear = 2015;
 			$scope.countryID = "pl";
+			$scope.chartType = "column2d";
 			$scope.incomeLevel = "LMC";
 			$scope.indicatorData = "SP.POP.TOTL";
 			
@@ -22,7 +26,7 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
                 }).then(function mySucces(response) {
 					// Table countries
                     if ($scope.dataType == "country") {
-                        tableAttr();
+                        tableAttr($scope.dataType);
 						var data = response.data[1];
 						removeRegions(data.length, data);
                         $('#table').bootstrapTable({
@@ -51,7 +55,7 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
                         });
 						// Table of comparison(using population indicator)
                     }  else if ($scope.dataType == "indicator") {
-                        tableAttr();
+                        tableAttr($scope.dataType);
 						var data = response.data[1];
 						var count = data.length;
 						while(count > 0){ 
@@ -60,8 +64,12 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
 							count --; 
 						}
 						
+						var number = $scope.toYear - $scope.fromYear;
+						data.splice(0, (24 * number) + 24);
+						
                         $('#table').bootstrapTable({
                             data: data,
+							
                             columns: [{
                                 field: 'country.id',
                                 title: 'Country ID',
@@ -76,11 +84,18 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
                             }, {
                                 field: 'date',
                                 title: 'Date'
-                            }]
+                            }],
+							groupBy: true,
+							groupFields: ['country.id']
                         });
+						$('#table').bootstrapTable('refreshOptions', {
+							groupBy: true,
+							groupByField: 'country.id'
+						});
+						
 						// Table of countries by their incomelevel
                     } else if ($scope.dataType == "income") {
-                        tableAttr();
+                        tableAttr($scope.dataType);
 						var data = response.data[1];
 						removeRegions(data.length, data);
                         $('#table').bootstrapTable({
@@ -113,6 +128,8 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
                 });
             }
 			
+			
+			
 			//Load data for charts
 			$scope.loadChartData = function() {	
 				$http({
@@ -124,60 +141,23 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
 					console.log(data);
 					
 					FusionCharts.ready(function(){
-						var text = "";
-						for (var i = 0; i < data.length; i++){
-							text += "{\"label\": \"" + data[i].date + "\", \"value\": \"" + data[i].value + "\"},"
-						}
-						text = text.substring(0, text.length - 1);
-						console.log(text);
 						var fusioncharts = new FusionCharts({
-							id: "mychart-1",
-							type: 'column3d',
+							id: "mychart",
+							type: $scope.chartType,
 							renderAt: 'chart-container',
 							width: '600',
 							height: '300',
 							dataFormat: 'json',
-							dataSource: {
-								"chart": {
-									"caption": data[0].indicator.value + "(" + data[0].country.value + ")",
-									"captionFontBold": "0",
-									"captionFontSize": "20",
-									"xAxisName": "Year",
-									"xAxisNameFontSize": "15",
-									"xAxisNameFontBold": "0",
-									"paletteColors": "#539FB6",
-									"plotFillAlpha": "80",
-									"usePlotGradientColor": "0",
-									"numberPrefix": "$",
-									"bgcolor": "#22252A",
-									"bgalpha": "95",
-									"canvasbgalpha": "0",
-									"basefontcolor": "#F7F3E7",
-									"showAlternateHGridColor": "0",
-									"divlinealpha": "50",
-									"divlinedashed": "0",
-									"toolTipBgColor": "#000",
-									"toolTipPadding": "10",
-									"toolTipBorderRadius": "5",
-									"toolTipBorderThickness": "2",
-									"toolTipBgAlpha": "62",
-									"toolTipBorderColor": "#BBB",
-									"rotateyaxisname": "1",
-									"canvasbordercolor": "#ffffff",
-									"canvasborderthickness": ".3",
-									"canvasborderalpha": "100",
-									"showValues": "0",
-									"plotSpacePercent": "12" 
-								},
-								"data":[{"label": "2015", "value": "null"},{"label": "2014", "value": "null"},{"label": "2013", "value": "271101.31"},{"label": "2012", "value": "295772.886"},{"label": "2011", "value": "286444.038"},{"label": "2010", "value": "304643.359"}]
-							}
+							dataSource: createDataSource(data)
 						});
 						fusioncharts.render();
 					});
 				 }, function myError(response) {
                     $scope.myWelcome = response.statusText;
                 });
-				
+				$scope.hidedChart = false;
+				$scope.hideButton = false;
+				$scope.hideButtonShow = true;
 			}
 
             // Hide or show inputs
@@ -200,11 +180,23 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
                     $scope.hideIncomeChoose = true;
                 }
             }
-
+			
+			$scope.hideChart = function() { 
+				$scope.hidedChart = true;
+				$scope.hideButton = true;
+				$scope.hideButtonShow = false;
+			}
+			
+			$scope.showChart = function() {
+				$scope.hidedChart = false;
+				$scope.hideButton = false;
+				$scope.hideButtonShow = true;
+			}
+	
 
         });
 
-        function tableAttr() {
+        function tableAttr(type) {
             var elem = document.getElementById("tableDiv");
             elem.innerHTML = '';
             var table = document.createElement("TABLE");
@@ -221,6 +213,24 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
             elem.appendChild(table);
 
         }
+		
+		function createDataSource(response){
+			var dataSource, chart, data;
+			// Creating dataSourceChart
+			chart = "\"chart\": { \n \"caption\":" + "\"" + response[0].indicator.value + "(" + response[0].country.value + ")\",\n \"captionFontBold\": \"0\", \n \"captionFontSize\": \"20\", \n \"xAxisName\": \"Year\", \n \"xAxisNameFontSize\": \"15\", \n \"xAxisNameFontBold\": \"0\", \n \"yAxisName\": \"Value's\", \n \"yAxisNameFontSize\": \"15\", \n \"yAxisNameFontBold\": \"0\", \n \"paletteColors\": \"#539FB6\", \n \"plotFillAlpha\": \"80\", \n \"usePlotGradientColor\": \"0\", \n \"numberPrefix\": \"$\", \n \"bgcolor\": \"#22252A\", \n \"bgalpha\": \"95\", \n \"canvasbgalpha\": \"0\", \n \"basefontcolor\": \"#F7F3E7\", \n \"showAlternateHGridColor\": \"0\", \n \"divlinealpha\": \"50\", \n \"divlinedashed\": \"0\", \n \"toolTipBgColor\": \"#000\", \n \"toolTipPadding\": \"10\", \n \"toolTipBorderRadius\": \"5\", \n \"toolTipBorderThickness\": \"2\", \n \"toolTipBgAlpha\": \"62\", \n \"toolTipBorderColor\": \"#BBB\", \n \"rotateyaxisname\": \"1\", \n \"canvasbordercolor\": \"#ffffff\", \n \"canvasborderthickness\": \".3\", \n \"canvasborderalpha\": \"100\", \n \"showValues\": \"0\", \n \"plotSpacePercent\": \"12\"}, ";
+			// Creating dataSourceData
+			data = "\"data\":[";
+			for (var i = response.length -1; i > 0; i--){
+				data += "{\"label\": \"" + response[i].date + "\", \"value\": \"" + response[i].value + "\"},"
+			}
+			data = data.substring(0, data.length - 1);
+			data += "] }";
+			dataSource = "{" + chart + data;
+			console.log(dataSource);
+			return dataSource;
+		}
+		
+		
 		
 		function removeRegions(count, data){
 			while(count > 0){ 
@@ -257,7 +267,10 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
                     suffix = 'countries';
                     break;
                 case 'indicator':
-                    suffix = 'countries/' + countryID + '/indicators/' + indicatorData;
+					if (countryID != null)
+						suffix = 'countries/' + countryID + '/indicators/' + indicatorData;
+					else
+						suffix = 'countries/indicators/' + indicatorData;
                     break;
             }
             var finalUrl = url + languageSuffix + suffix + json_suffix + per_page;
