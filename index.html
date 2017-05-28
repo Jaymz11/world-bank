@@ -9,6 +9,13 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<!--Charts-->
+	
+    <!-- FusionCharts JavaScript Package File -->
+    <script type="text/javascript" src="js/fusioncharts.js"></script>
+    <!-- FusionCharts AngularJS Chart Plugin -->
+    <script type="text/javascript" src="js/angular-fusioncharts.min.js"></script>
 
     <!--Other links-->
     <link rel="stylesheet" href="css/style.css">
@@ -29,6 +36,7 @@
                     </div>
                 </div>
             </nav>
+		</div>
 
             <h1>World Bank information</h1>
 
@@ -86,15 +94,25 @@
 					<strong>To Year : </strong>
 					<input style="width: 300px;" type="number" ng-model="toYear">
 				</div>
+				<div class="countryIso"  ng-class="countryIso">
+					<strong>Country ID : </strong>
+					<input style="width: 300px;" ng-model="countryID">
+				</div>
             </div>
+			
+			
             <!--    Load data button's   -->
             <button class="button" ng-hide="hideCountryChoose" ng-click="loadBankData()">Show all countries</button>
 			<button class="button" ng-hide="hideIncomeChoose" ng-click="loadBankData()">Show countries by income</button>
 			<button class="button" ng-hide="hideIndicatorChoose" ng-click="loadBankData()">Compare countries</button>
-			<button class="button" ng-hide="hideIndicatorChoose" ng-click="loadIndicatorsData()">Compare countries1</button>
+			<button class="button" ng-hide="hideIndicatorChoose" ng-click="loadChartData()">Create chart</button>
             <!--    Loaded data:    -->
             <div id="tableDiv"></div>
-        </div>
+		
+			<center>
+				<div id="chart-container"></div>
+			</center>
+        
     </div>
 
 </body>
