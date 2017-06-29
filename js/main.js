@@ -68,8 +68,7 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
 						data.splice(0, (24 * number) + 24);
 						
                         $('#table').bootstrapTable({
-                            data: data,
-							
+                            data: data,							
                             columns: [{
                                 field: 'country.id',
                                 title: 'Country ID',
@@ -84,14 +83,8 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
                             }, {
                                 field: 'date',
                                 title: 'Date'
-                            }],
-							groupBy: true,
-							groupFields: ['country.id']
+                            }]
                         });
-						$('#table').bootstrapTable('refreshOptions', {
-							groupBy: true,
-							groupByField: 'country.id'
-						});
 						
 						// Table of countries by their incomelevel
                     } else if ($scope.dataType == "income") {
@@ -123,11 +116,11 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
 								}]
                         });
                     }
+					
                 }, function myError(response) {
                     $scope.myWelcome = response.statusText;
                 });
             }
-			
 			
 			
 			//Load data for charts
@@ -195,14 +188,17 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
 	
 
         });
-
+		
+		
+		
         function tableAttr(type) {
             var elem = document.getElementById("tableDiv");
             elem.innerHTML = '';
             var table = document.createElement("TABLE");
             table.setAttribute("id", "table");
-            table.setAttribute("class", "flatTable");
+            table.setAttribute("class", "table-hover");
             table.setAttribute("data-search", "true");
+			table.setAttribute("data-show-export", "true");
             table.setAttribute("data-show-toggle", "true");
             table.setAttribute("data-show-columns", "true");
             table.setAttribute("data-detail-view", "true");
