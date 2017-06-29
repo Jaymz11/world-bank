@@ -11,10 +11,10 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
 			$scope.hideButtonShow = true;
             $scope.fromYear = parseInt(loadDefault("fromYear", 2010));
             $scope.toYear = parseInt(loadDefault("toYear", 2015));
-			$scope.countryID = "pl";
-			$scope.chartType = "column2d";
-			$scope.incomeLevel = "LMC";
-			$scope.indicatorData = "SP.POP.TOTL";
+			$scope.countryID = loadDefault("countryId", "pl");
+			$scope.chartType = loadDefault("chartType", "column2d");
+			$scope.incomeLevel = loadDefault("incomeLevel", "LMC");
+			$scope.indicatorData = loadDefault("indicatorData", "SP.POP.TOTL");
             
             // Hide or show inputs
             $scope.querySwitch = function() {
@@ -189,12 +189,16 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
 				$scope.hideButton = false;
 				$scope.hideButtonShow = true;
 			}
-	
+
             $scope.saveDefaults = function() {
                 saveDefault("dataType", $scope.dataType);
                 saveDefault("languageData", $scope.languageData);
                 saveDefault("fromYear", $scope.fromYear);
                 saveDefault("toYear", $scope.toYear);
+                saveDefault("countryId", $scope.countryID);
+                saveDefault("incomeLevel", $scope.incomeLevel);
+                saveDefault("indicatorData", $scope.indicatorData);
+                saveDefault("chartType", $scope.chartType);
             }
 
         });
