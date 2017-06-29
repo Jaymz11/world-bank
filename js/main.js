@@ -1,21 +1,45 @@
 var app = angular.module('myApp', ["ng-fusioncharts"]);
         app.controller('myCtrl', function($scope, $http) {
             // Init data
-            $scope.dataType = "country";
-            $scope.languageData = "en";
+            $scope.dataType = loadDefault("dataType", "country");
+            $scope.languageData = loadDefault("languageData", "en");
             $scope.hideIndicatorChoose = true;
 			$scope.hideIncomeChoose = true;
 			$scope.hideCountryChoose = false;
 			$scope.hidedChart = true;
 			$scope.hideButton = true;
 			$scope.hideButtonShow = true;
-            $scope.fromYear = 2010;
-            $scope.toYear = 2015;
+            $scope.fromYear = parseInt(loadDefault("fromYear", 2010));
+            $scope.toYear = parseInt(loadDefault("toYear", 2015));
 			$scope.countryID = "pl";
 			$scope.chartType = "column2d";
 			$scope.incomeLevel = "LMC";
 			$scope.indicatorData = "SP.POP.TOTL";
+            
+            // Hide or show inputs
+            $scope.querySwitch = function() {
+				if ($scope.dataType == 'country') {
+                    $scope.hideCountryChoose = false;
+                } else {
+                    $scope.hideCountryChoose = true;
+                }
+				
+                if ($scope.dataType == 'indicator') {
+                    $scope.hideIndicatorChoose = false;
+                } else {
+                    $scope.hideIndicatorChoose = true;
+                }
+				
+				if ($scope.dataType == 'income') {
+                    $scope.hideIncomeChoose = false;
+                } else {
+                    $scope.hideIncomeChoose = true;
+                }
+            }
 			
+            
+            $scope.querySwitch();
+            
 			
             // Load data from world bank
             $scope.loadBankData = function() {
@@ -153,27 +177,7 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
 				$scope.hideButtonShow = true;
 			}
 
-            // Hide or show inputs
-            $scope.querySwitch = function() {
-				if ($scope.dataType == 'country') {
-                    $scope.hideCountryChoose = false;
-                } else {
-                    $scope.hideCountryChoose = true;
-                }
-				
-                if ($scope.dataType == 'indicator') {
-                    $scope.hideIndicatorChoose = false;
-                } else {
-                    $scope.hideIndicatorChoose = true;
-                }
-				
-				if ($scope.dataType == 'income') {
-                    $scope.hideIncomeChoose = false;
-                } else {
-                    $scope.hideIncomeChoose = true;
-                }
-            }
-			
+
 			$scope.hideChart = function() { 
 				$scope.hidedChart = true;
 				$scope.hideButton = true;
@@ -186,6 +190,12 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
 				$scope.hideButtonShow = true;
 			}
 	
+            $scope.saveDefaults = function() {
+                saveDefault("dataType", $scope.dataType);
+                saveDefault("languageData", $scope.languageData);
+                saveDefault("fromYear", $scope.fromYear);
+                saveDefault("toYear", $scope.toYear);
+            }
 
         });
 		
@@ -279,4 +289,18 @@ var app = angular.module('myApp', ["ng-fusioncharts"]);
 
             console.log(finalUrl);
             return finalUrl;
+        }
+
+        function loadDefault(element, defaultValue) {
+            value = localStorage.getItem(element);
+            if (value == '' || value == undefined) {
+                return defaultValue;
+            }
+
+            return value;
+        }
+
+        function saveDefault(element, valueToSave) {
+            console.log("Saving element:" + element + " value:" + valueToSave);
+            localStorage.setItem(element, valueToSave);
         }

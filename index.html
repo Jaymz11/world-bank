@@ -90,11 +90,11 @@
             </div>
 
 			<div class="form-group" ng-hide="hideIndicatorChoose">
-				<div class="date1" ng-class="yearInputs">
+				<div class="date1" string-to-number ng-class="yearInputs">
 					<strong>From Year : </strong>
 					<input style="width: 300px;" type="number" ng-model="fromYear">
 				</div>
-				<div class="date1"  ng-class="yearInputs">
+				<div class="date1"  string-to-number ng-class="yearInputs">
 					<strong>To Year : </strong>
 					<input style="width: 300px;" type="number" ng-model="toYear">
 				</div>
@@ -117,6 +117,7 @@
 			
 			
             <!--    Load data button's   -->
+            <button class="button" ng-click="saveDefaults()">Save default query</button>
             <button class="button" ng-hide="hideCountryChoose" ng-click="loadBankData()">Show all countries</button>
 			<button class="button" ng-hide="hideIncomeChoose" ng-click="loadBankData()">Show countries by income</button>
 			<button class="button" ng-hide="hideIndicatorChoose" ng-click="loadBankData()">Compare countries</button>
